@@ -6,7 +6,15 @@ const username = ref('');
 const password = ref('');
 
 const handleLogin = () => {
-  // handle login
+  if(username.value === '' || password.value === '') {
+    alert('请输入用户名和密码')
+    return;
+  }else{
+    router.push('/main')
+  }
+  // if(username.value === 'admin' && password.value === 'admin') {
+  //   router.push('/main')
+  // }
 };
 
 const forget = () => {

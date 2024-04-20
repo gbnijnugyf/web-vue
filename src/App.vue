@@ -1,8 +1,56 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
+import { RouterView } from "vue-router";
+import { onMounted } from 'vue';
 
+</script>
+<script lang="ts">
+function chanegId(
+  elArr: NodeListOf<Element>,
+  option: "add" | "remove",
+  id: string
+) {
+  if (!elArr) {
+    return;
+  }
+  if (option === "add") {
+    elArr.forEach((el: Element | null) => {
+      if (el) {
+        // 增加id
+        el.setAttribute("id", id);
+      }
+    });
+  } else if (option === "remove") {
+    elArr.forEach((el: Element | null) => {
+      if (el) {
+        el.removeAttribute("id");
+      }
+    });
+  }
+}
+
+export function changeTheme(color: string) {
+  console.log(color);
+  const elHeader = document.querySelectorAll(".el-header");
+  const elCalendar = document.querySelectorAll(".calendar-container");
+  const elMenuItem = document.querySelectorAll(".el-sub-menu");
+  console.log(elCalendar)
+  const elAllArr: NodeListOf<Element>[] = [elHeader, elCalendar, elMenuItem];
+  if (!elHeader) {
+    return;
+  }
+  if (color === "blue") {
+    elAllArr.forEach((elarr: NodeListOf<Element>) => {
+      chanegId(elarr, "remove", "yellow");
+      chanegId(elarr, "add", "blue");
+    });
+  } else if (color === "yellow") {
+    elAllArr.forEach((elarr: NodeListOf<Element>) => {
+      chanegId(elarr, "remove", "blue");
+      chanegId(elarr, "add", "yellow");
+    });
+  }
+}
+</script>
 
 <template>
   <div class="common-layout">
@@ -15,78 +63,18 @@ import HelloWorld from './components/HelloWorld.vue'
   </div>
 </template>
 
-
-
 <style scoped lang="scss">
 .common-layout {
   border: 1px solid black;
   width: 100vw;
+  height: 90vh;
 
   .el-main {
     margin: 0 auto;
     width: 80%;
+    height: 100%;
   }
 }
 
-/* header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-} */
 </style>
+
