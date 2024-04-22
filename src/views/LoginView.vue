@@ -58,7 +58,7 @@ const register = () => {
         <el-button class="other" id="register" @click="register">注册</el-button>
       </el-col>
       <el-col :span="12">
-        <el-button class="other" id="forget" @click="forget">忘记密码？</el-button>
+        <el-button class="other" id="forget" @click="forget">修改密码</el-button>
       </el-col>
     </el-row>
   </div>
@@ -66,7 +66,9 @@ const register = () => {
 
 <style lang="scss">
 .login-container {
+  margin: 0 auto;
   margin-top: 5%;
+  width: 80%
 }
 
 .login-header {

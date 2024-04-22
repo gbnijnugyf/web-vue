@@ -183,7 +183,7 @@ const disabledDate = (time: Date) => {
           :before-upload="beforeAvatarUpload"
         >
           <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <i v-else class="el-icon-plus avatar-uploader-icon" style="font-size: small;">点击上传头像</i>
         </el-upload>
       </el-col>
     </el-row>
