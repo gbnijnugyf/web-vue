@@ -19,7 +19,7 @@ function handleSelect(keyPath: string) {
 </script>
 <template>
   <el-container class="main-container">
-    <el-aside width="18%">
+    <el-aside class="my-aside" width="18%">
       <el-scrollbar>
         <el-menu :default-openeds="['1']">
           <el-menu-item
@@ -76,27 +76,30 @@ function handleSelect(keyPath: string) {
         </div>
       </el-header>
 
-      <div class="el-main-container">
-        <el-main>
+        <el-main style="min-height: min-content;">
           <RouterView />
         </el-main>
-      </div>
+
     </el-container>
   </el-container>
 </template>
 
 <style lang="scss">
 .main-container {
-  width: 100%;
-  height: 90%;
+  // width: 100%;
+  // height: 90%;
   .el-sub-menu {
     background-color: rgb(95, 133, 209);
   }
-
   .el-header {
     position: relative;
     background-color: rgb(95, 133, 209);
     color: var(--el-text-color-primary);
+  }
+  @media (max-width: 999px) {
+    .my-aside {
+      display: none;
+    }
   }
   #yellow {
     background-color: rgb(188, 144, 80);
@@ -113,4 +116,7 @@ function handleSelect(keyPath: string) {
   align-items: center;
   margin-top: 10%;
 }
+// .el-container{
+//   height: min-content
+// }
 </style>

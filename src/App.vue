@@ -56,9 +56,7 @@ export function changeTheme(color: string) {
   <div class="common-layout">
     <el-container>
       <!-- <el-header>Header</el-header> -->
-      <el-main>
         <RouterView />
-      </el-main>
     </el-container>
   </div>
 </template>
@@ -67,8 +65,9 @@ export function changeTheme(color: string) {
 .common-layout {
   border: 1px solid black;
   width: 100vw;
-  height: 90vh;
-
+  min-height: 100vh;
+  max-width: 1450px;
+  overflow-x: hidden;
   .el-main {
     margin: 0 auto;
     width: 80%;
