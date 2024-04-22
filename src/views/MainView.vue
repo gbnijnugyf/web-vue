@@ -16,6 +16,15 @@ const tableData = ref(Array.from({ length: 20 }).fill(item));
 function handleSelect(keyPath: string) {
   router.push(keyPath);
 }
+
+const quit = () => {
+  router.push("/login");
+};
+
+const displayCalendar = () => {
+  router.push("/main/calendar");
+};
+
 </script>
 <template>
   <el-container class="main-container">
@@ -69,7 +78,8 @@ function handleSelect(keyPath: string) {
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item>Action 1</el-dropdown-item>
+                <el-dropdown-item @click="quit">退出</el-dropdown-item>
+                <el-dropdown-item @click="displayCalendar">日历</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>

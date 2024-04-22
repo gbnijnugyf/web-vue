@@ -7,7 +7,11 @@
         >
       </el-col>
       <el-col :span="12" style="text-align: right">
-        <el-input v-model="search" placeholder="搜索用户名" style="width: 30%" />
+        <el-input
+          v-model="search"
+          placeholder="搜索用户名"
+          style="width: 30%"
+        />
         <el-button @click="searchRows">搜索</el-button>
       </el-col>
     </el-row>
@@ -56,7 +60,12 @@
     </el-pagination>
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle">
-      <el-form v-if="dialogTitle !== '删除'" ref="form" :model="currentRow" :rules="rules">
+      <el-form
+        v-if="dialogTitle !== '提示'"
+        ref="form"
+        :model="currentRow"
+        :rules="rules"
+      >
         <el-form-item label="用户名" prop="name">
           <el-input v-model="currentRow.name"></el-input>
         </el-form-item>
@@ -100,7 +109,9 @@
           </el-date-picker>
         </el-form-item>
       </el-form>
-      <p v-else style="margin: 20px 10px;">确定永久删除用户：{{ currentRow.name }} 吗？</p>
+      <p v-else style="margin: 20px 10px">
+        确定永久删除用户：{{ currentRow.name }} 吗？
+      </p>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitDialog">确 定</el-button>
@@ -191,23 +202,22 @@ const rules = {
 };
 
 const provinces = [
-  { value: '湖北', label: '湖北' },
+  { value: "湖北", label: "湖北" },
   // add more provinces as needed
 ];
 
 const cities = [
-  { value: '武汉', label: '武汉' },
-  { value: '荆州', label: '荆州' },
-  { value: '宜昌', label: '宜昌' },
-  { value: '襄阳', label: '襄阳' },
+  { value: "武汉", label: "武汉" },
+  { value: "荆州", label: "荆州" },
+  { value: "宜昌", label: "宜昌" },
+  { value: "襄阳", label: "襄阳" },
   // add more cities as needed
 ];
-
 
 const form = ref();
 
 const submitDialog = () => {
-  if (dialogTitle.value === "删除") {
+  if (dialogTitle.value === "提示") {
     const index = data.value.findIndex((item) => item.id === currentRow.id);
     if (index !== -1) {
       data.value.splice(index, 1);
@@ -216,12 +226,17 @@ const submitDialog = () => {
   } else {
     form.value.validate((valid: boolean) => {
       if (valid) {
-        if (dialogTitle.value === "新增") {
+        if (dialogTitle.value === "新增用户") {
           addRow();
-        } else if (dialogTitle.value === "编辑") {
-          const index = data.value.findIndex((item) => item.id === currentRow.id);
+        } else if (dialogTitle.value === "修改用户") {
+          const index = data.value.findIndex(
+            (item) => item.id === currentRow.id
+          );
           if (index !== -1) {
-            data.value.splice(index, 1, { ...currentRow });
+            data.value.splice(index, 1, {
+              ...currentRow,
+              date: new Date(currentRow.date).toISOString().split("T")[0],
+            });
           }
         }
         dialogVisible.value = false;
@@ -229,7 +244,6 @@ const submitDialog = () => {
     });
   }
 };
-
 
 const search = ref("");
 const currentPage = ref(1);
@@ -295,7 +309,7 @@ const openDialog = (type: string, row = {}) => {
   console.log(type, row);
   if (type === "add") {
     console.log("1");
-    dialogTitle.value = "新增";
+    dialogTitle.value = "新增用户";
     currentRow.name = "";
     currentRow.email = "";
     currentRow.date = "";
@@ -304,10 +318,10 @@ const openDialog = (type: string, row = {}) => {
     currentRow.address = "";
     currentRow.postcode = "";
   } else if (type === "edit") {
-    dialogTitle.value = "编辑";
+    dialogTitle.value = "修改用户";
     Object.assign(currentRow, row);
   } else if (type === "delete") {
-    dialogTitle.value = "删除";
+    dialogTitle.value = "提示";
     Object.assign(currentRow, row);
   }
   dialogVisible.value = true;

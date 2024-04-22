@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-import { onMounted } from 'vue';
-
+import { onMounted } from "vue";
 </script>
 <script lang="ts">
 function chanegId(
@@ -33,7 +32,7 @@ export function changeTheme(color: string) {
   const elHeader = document.querySelectorAll(".el-header");
   const elCalendar = document.querySelectorAll(".calendar-container");
   const elMenuItem = document.querySelectorAll(".el-sub-menu");
-  console.log(elCalendar)
+
   const elAllArr: NodeListOf<Element>[] = [elHeader, elCalendar, elMenuItem];
   if (!elHeader) {
     return;
@@ -56,7 +55,9 @@ export function changeTheme(color: string) {
   <div class="common-layout">
     <el-container>
       <!-- <el-header>Header</el-header> -->
+      <el-main style="--el-main-padding: 0px">
         <RouterView />
+      </el-main>
     </el-container>
   </div>
 </template>
@@ -74,6 +75,4 @@ export function changeTheme(color: string) {
     height: 100%;
   }
 }
-
 </style>
-

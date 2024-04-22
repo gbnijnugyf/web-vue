@@ -1,0 +1,70 @@
+<template>
+  <div class="user-page">
+    <div class="avatar-container">
+      <img class="avatar" :src="user.avatar" alt="User avatar" />
+    </div>
+    <div class="info-container">
+      <h2 style="margin-left: 37%">用户基本信息</h2>
+      <el-table :data="userInfo" style="width: 100%">
+        <el-table-column prop="item"></el-table-column>
+        <el-table-column prop="info"></el-table-column>
+      </el-table>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+const user = ref({
+  avatar: "../public/avatarEg.jpg",
+});
+const userInfo = ref([
+  { item: "用户名", info: "John Doe" },
+  { item: "电子邮件", info: "john@example.com" },
+  { item: "余额", info: "0" },
+  { item: "生日", info: "2024-3-11" },
+]);
+// export default {
+//   data() {
+//     return {
+//       user: {
+//         avatar: "../public/avatarEg.jpg",
+//       },
+//       userInfo: [
+//         { item: "用户名", info: "John Doe" },
+//         { item: "电子邮件", info: "john@example.com" },
+//         { item: "余额", info: "0" },
+//         { item: "生日", info: "2024-3-11" },
+//         // More user info as needed
+//       ],
+//     };
+//   },
+// };
+</script>
+
+<style lang="scss">
+.user-page {
+  display: flex;
+  gap: 20px;
+}
+
+.avatar-container,
+.info-container {
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-container {
+  width: 200px;
+  height: 200px;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info-container {
+  flex-grow: 1;
+}
+</style>

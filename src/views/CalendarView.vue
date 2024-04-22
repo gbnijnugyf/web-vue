@@ -13,8 +13,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 const value = ref(new Date());
-const url =
-  "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg";
+const url = "../public/avatarEg.jpg";
 const fit = "fill";
 </script>
 
@@ -41,6 +40,6 @@ const fit = "fill";
   background-color: rgb(237, 227, 208);
 }
 #blue {
-  background-color: rgb(203,225,252);
+  background-color: rgb(203, 225, 252);
 }
 </style>

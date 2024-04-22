@@ -44,6 +44,10 @@ const router = createRouter({
           path: 'table',
           component: () => import('@/views/TableView.vue')
         },
+        {
+          path: 'userinfo',
+          component: () => import('@/views/UserInfoView.vue')
+        },
         // {
         //   path: 'settings',
         //   component: () => import('@/views/SettingsView.vue')
@@ -55,7 +59,7 @@ const router = createRouter({
         {
           //默认子路由
           path: '',
-          component: () => import('@/views/CalendarView.vue')
+          component: () => import('@/views/UserInfoView.vue')
         }
       ]
     },
