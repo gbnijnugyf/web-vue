@@ -188,12 +188,12 @@ const disabledDate = (time: Date) => {
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="12">
+      <el-col :xs="24" :sm="12">
         <el-button class="other" id="register" @click="submitForm(ruleFormRef)"
           >注册</el-button
         >
       </el-col>
-      <el-col :span="12">
+      <el-col :xs="24" :sm="12">
         <el-button class="other" id="forget" @click="returnLogin"
           >返回登录界面</el-button
         >

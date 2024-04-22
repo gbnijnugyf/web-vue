@@ -6,7 +6,6 @@ import type { FormInstance, FormRules } from "element-plus";
 const ruleFormRefLast = ref<FormInstance>();
 const ruleFormRefNew = ref<FormInstance>();
 
-
 const checkUsername = (rule: any, value: any, callback: any) => {
   if (!value) {
     return callback(new Error("请输入用户名"));
@@ -133,15 +132,12 @@ const returnLogin = () => {
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="12">
-        <el-button
-          class="other"
-          id="register"
-          @click="submitForm()"
+      <el-col :xs="24" :sm="12">
+        <el-button class="other" id="register" @click="submitForm()"
           >修改密码</el-button
         >
       </el-col>
-      <el-col :span="12">
+      <el-col :xs="24" :sm="12">
         <el-button class="other" id="forget" @click="returnLogin"
           >返回登录界面</el-button
         >

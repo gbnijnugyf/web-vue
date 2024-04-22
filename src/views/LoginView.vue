@@ -54,10 +54,10 @@ const register = () => {
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="12">
+      <el-col :xs="24" :sm="12">
         <el-button class="other" id="register" @click="register">注册</el-button>
       </el-col>
-      <el-col :span="12">
+      <el-col :xs="24" :sm="12">
         <el-button class="other" id="forget" @click="forget">修改密码</el-button>
       </el-col>
     </el-row>
