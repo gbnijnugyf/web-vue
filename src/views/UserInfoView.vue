@@ -14,7 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { getUserInfo } from "@/service/service";
+import { onMounted, ref } from "vue";
 const user = ref({
   avatar: "../public/avatarEg.jpg",
 });
@@ -24,6 +25,21 @@ const userInfo = ref([
   { item: "余额", info: "0" },
   { item: "生日", info: "2024-3-11" },
 ]);
+onMounted(async () => {
+  try {
+    const res = await getUserInfo();
+    console.log(res.data.data); 
+    const userData = res.data.data;
+    userInfo.value = [
+      { item: "用户名", info: userData.userName },
+      { item: "电子邮件", info: userData.email },
+      { item: "余额", info: userData.balance===null?"":userData.balance },
+      { item: "生日", info: userData.birthday===null?"":userData.birthday },
+    ];
+  } catch (error) {
+    console.error(error);
+  }
+});
 // export default {
 //   data() {
 //     return {

@@ -18,6 +18,8 @@ function handleSelect(keyPath: string) {
 }
 
 const quit = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("userName");
   router.push("/login");
 };
 

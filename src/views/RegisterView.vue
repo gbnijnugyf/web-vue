@@ -3,6 +3,7 @@ import { reactive, ref } from "vue";
 import router from "@/router";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
+import { formateDate } from "@/utils/utils";
 
 const ruleFormRef = ref<FormInstance>();
 const imageUrl = ref<string>();
@@ -11,6 +12,7 @@ const handleAvatarSuccess = (res: any, file: File) => {
   imageUrl.value = URL.createObjectURL(file);
 };
 
+// 在 beforeAvatarUpload 方法中转换图片为 base64
 const beforeAvatarUpload = (file: File) => {
   const isJPG = file.type === "image/jpeg";
   const isPNG = file.type === "image/png";
@@ -26,7 +28,10 @@ const beforeAvatarUpload = (file: File) => {
   if ((isJPG || isPNG) && isLt2M) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      if (e.target) imageUrl.value = e.target.result as string;
+      if (e.target) {
+        imageUrl.value = e.target.result as string;
+        ruleForm.avatarBase64 = e.target.result as string; // 保存 base64 字符串
+      }
     };
     reader.readAsDataURL(file);
   }
@@ -63,25 +68,43 @@ const checkEmail = (rule: any, value: any, callback: any) => {
   }
   callback();
 };
+const checkAvatar = (rule: any, value: any, callback: any) => {
+  console.log(value);
+  if (!value) {
+    return callback(new Error("请上传头像"));
+  }
+  callback();
+};
 
 const ruleForm = reactive({
   username: "",
   pass: "",
   email: "",
   date: "", //TODO: 需要格式转换为yy-mm-dd
+  avatarBase64: "",
 });
 
 const rules = reactive<FormRules<typeof ruleForm>>({
   pass: [{ validator: validatePass, trigger: "blur" }],
   email: [{ validator: checkEmail, trigger: "blur" }],
   username: [{ validator: checkUsername, trigger: "blur" }],
+  avatarBase64: [{ validator: checkAvatar, trigger: "blur" }],
 });
 
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
+  console.log(ruleForm);
+  // 检查 avatarBase64 字段是否有值
+
   formEl.validate((valid) => {
     if (valid) {
-        console.log(ruleForm.date)
+      if (ruleForm.avatarBase64 === "") {
+        ElMessage.error("请上传头像");
+        return;
+      }
+      const dataStr = formateDate(ruleForm.date);
+      console.log(ruleForm);
+      console.log(dataStr);
       console.log("submit!");
     } else {
       console.log("error submit!");
@@ -171,7 +194,7 @@ const disabledDate = (time: Date) => {
             :shortcuts="shortcuts"
             :size="size"
           />
-          <el-form-item/>
+          <el-form-item />
         </el-form>
       </el-col>
       <el-col :xs="24" :sm="12">
@@ -183,7 +206,12 @@ const disabledDate = (time: Date) => {
           :before-upload="beforeAvatarUpload"
         >
           <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon" style="font-size: small;">点击上传头像</i>
+          <i
+            v-else
+            class="el-icon-plus avatar-uploader-icon"
+            style="font-size: small"
+            >点击上传头像</i
+          >
         </el-upload>
       </el-col>
     </el-row>
@@ -272,7 +300,7 @@ const disabledDate = (time: Date) => {
 .avatar-uploader > .el-upload {
   width: 50%;
   margin-left: 25%;
-//   margin-top: 6%;
+  //   margin-top: 6%;
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;

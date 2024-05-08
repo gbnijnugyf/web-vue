@@ -1,16 +1,35 @@
 <script setup lang="ts">
 import router from '@/router';
+import { userLogin } from '@/service/service';
+import type { API } from '@/service/typing';
 import { ref } from 'vue';
 
 const username = ref('');
 const password = ref('');
 
-const handleLogin = () => {
+const handleLogin = async () => {
   if(username.value === '' || password.value === '') {
     alert('请输入用户名和密码')
     return;
   }else{
-    router.push('/main')
+
+    const data:API.TLogin= {
+      userName: username.value,
+      password: password.value
+    }
+    const res = await userLogin(data)
+    // console.log(res.data.data)
+    if(res.status === 200 && res.data.data.token !== '') {
+      localStorage.setItem('token', res.data.data.token)
+      localStorage.setItem('userName', username.value)
+      console.log(localStorage.getItem('token'))
+      console.log(localStorage.getItem('userName'))
+      alert('登录成功')
+      router.push('/main')
+    }else{
+      alert('登录失败,请检查用户名和密码')
+    }
+    // router.push('/main')
   }
   // if(username.value === 'admin' && password.value === 'admin') {
   //   router.push('/main')
