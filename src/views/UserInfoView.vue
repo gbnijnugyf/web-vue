@@ -46,22 +46,6 @@ onMounted(async () => {
     console.error(error);
   }
 });
-// export default {
-//   data() {
-//     return {
-//       user: {
-//         avatar: "../public/avatarEg.jpg",
-//       },
-//       userInfo: [
-//         { item: "用户名", info: "John Doe" },
-//         { item: "电子邮件", info: "john@example.com" },
-//         { item: "余额", info: "0" },
-//         { item: "生日", info: "2024-3-11" },
-//         // More user info as needed
-//       ],
-//     };
-//   },
-// };
 </script>
 
 <style lang="scss">

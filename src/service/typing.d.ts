@@ -10,4 +10,22 @@ export declare namespace API {
     birthday: string;
     avatar: string;
   };
+  type TChangePassword = {
+    userName: string;
+    oldPassword: string;
+    newPassword: string;
+  };
+  type TTableParams = {
+    pageSize: number;
+    page: number;
+  };
+  type TTbaleItem = {
+    id: number;
+    user_name: string;
+    date_: string;
+    province: string;
+    city: string;
+    address: string;
+    zip: string;
+  }
 }

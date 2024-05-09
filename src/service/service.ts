@@ -63,4 +63,18 @@ const register = (data: API.TRegisterInfo) => {
   return globalAxios.post(`${BASR_URL}/register`, data);
 };
 
-export { userLogin, getUserInfo, register, BASEURL_STATIC };
+const changePassword = (data: API.TChangePassword) => {
+  return globalAxios.post(`${BASR_URL}/changePassword`, data);
+}
+
+
+const getTableData = (params: API.TTableParams) => {
+  return globalAxios.get(`${BASR_URL}/tableData`, { params });
+}
+
+const addTableData = (data: API.TTbaleItem) => {
+  return globalAxios.post(`${BASR_URL}/addTableData`, data);
+}
+
+
+export { addTableData,userLogin, getTableData,getUserInfo, register,changePassword, BASEURL_STATIC };

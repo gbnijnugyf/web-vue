@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BASEURL_STATIC, getUserInfo } from "@/service/service";
+import { getUserInfo } from "@/service/service";
 import { getPicUrl } from "@/utils/utils";
 import { onMounted, ref } from "vue";
 const value = ref(new Date());

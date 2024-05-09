@@ -37,7 +37,8 @@ const beforeAvatarUpload = (file: File) => {
     reader.readAsDataURL(file);
   }
 
-  return (isJPG || isPNG) && isLt2M;
+  // return (isJPG || isPNG) && isLt2M;
+  return false;
 };
 
 const checkUsername = (rule: any, value: any, callback: any) => {
@@ -115,11 +116,11 @@ const submitForm = (formEl: FormInstance | undefined) => {
         birthday: dataStr,
         avatar: ruleForm.avatarBase64,
       });
-      if(res.data.message === "注册成功"){
+      if (res.data.message === "注册成功") {
         ElMessage.success("注册成功");
         resetForm(formEl);
         router.push("/");
-      }else{
+      } else {
         ElMessage.error(res.data.message);
       }
       console.log(res);
@@ -217,7 +218,6 @@ const disabledDate = (time: Date) => {
       <el-col :xs="24" :sm="12">
         <el-upload
           class="avatar-uploader"
-          action="https://jsonplaceholder.typicode.com/posts/"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import router from "@/router";
-import type { FormInstance, FormRules } from "element-plus";
+import { ElMessage, type FormInstance, type FormRules } from "element-plus";
+import { changePassword } from "@/service/service";
 
 const ruleFormRefLast = ref<FormInstance>();
 const ruleFormRefNew = ref<FormInstance>();
@@ -57,8 +58,22 @@ const submitForm = () => {
       return false;
     }
     if (!ruleFormRefNew.value) return;
-    ruleFormRefNew.value.validate((valid) => {
+    ruleFormRefNew.value.validate(async (valid) => {
       if (valid) {
+        console.log(ruleFormLast, ruleFormNew);
+
+        const res = await changePassword({
+          userName: ruleFormLast.username,
+          oldPassword: ruleFormLast.pass,
+          newPassword: ruleFormNew.newPass,
+        });
+        console.log(res);
+        if (res.data.code === '0') {
+          ElMessage.success(res.data.message)
+          router.push("/");
+        }else{
+          ElMessage.error(res.data.message)
+        }
         console.log("submit!");
       } else {
         console.log("error submit!");
@@ -125,7 +140,7 @@ const returnLogin = () => {
               v-model="ruleFormNew.checkPass"
               type="password"
               autocomplete="off"
-              placeholder="密码"
+              placeholder="确认新密码"
             />
           </el-form-item>
         </el-form>

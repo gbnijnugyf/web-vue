@@ -22,25 +22,25 @@
       style="width: 100%; height: min-content"
     >
       <el-table-column prop="id" label="序号" width="60"></el-table-column>
-      <el-table-column prop="name" label="用户名"></el-table-column>
-      <el-table-column
+      <el-table-column prop="user_name" label="用户名"></el-table-column>
+      <!-- <el-table-column
         prop="email"
         label="电子邮箱"
         width="160"
-      ></el-table-column>
+      ></el-table-column> -->
       <el-table-column prop="province" label="省份"></el-table-column>
       <el-table-column prop="city" label="城市"></el-table-column>
       <el-table-column
         prop="address"
         label="地址"
-        width="190"
+        width="290"
       ></el-table-column>
       <el-table-column
-        prop="postcode"
+        prop="zip"
         label="邮编"
         width="80"
       ></el-table-column>
-      <el-table-column prop="date" label="日期" width="103"></el-table-column>
+      <el-table-column prop="date_" label="日期" width="103"></el-table-column>
       <el-table-column label="操作" width="100">
         <template #default="{ row }">
           <a size="mini" @click="openDialog('edit', row)">编辑</a>
@@ -66,12 +66,12 @@
         :model="currentRow"
         :rules="rules"
       >
-        <el-form-item label="用户名" prop="name">
-          <el-input v-model="currentRow.name"></el-input>
+        <el-form-item label="用户名" prop="user_name">
+          <el-input v-model="currentRow.user_name"></el-input>
         </el-form-item>
-        <el-form-item label="电子邮箱" prop="email">
+        <!-- <el-form-item label="电子邮箱" prop="email">
           <el-input v-model="currentRow.email"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="省份" prop="province">
           <el-select v-model="currentRow.province" placeholder="请选择">
             <el-option
@@ -97,12 +97,12 @@
         <el-form-item label="地址">
           <el-input v-model="currentRow.address"></el-input>
         </el-form-item>
-        <el-form-item label="邮编" prop="postcode">
-          <el-input v-model="currentRow.postcode"></el-input>
+        <el-form-item label="邮编" prop="zip">
+          <el-input v-model="currentRow.zip"></el-input>
         </el-form-item>
-        <el-form-item label="日期" prop="date">
+        <el-form-item label="日期" prop="date_">
           <el-date-picker
-            v-model="currentRow.date"
+            v-model="currentRow.date_"
             type="date"
             placeholder="选择日期"
           >
@@ -110,7 +110,7 @@
         </el-form-item>
       </el-form>
       <p v-else style="margin: 20px 10px">
-        确定永久删除用户：{{ currentRow.name }} 吗？
+        确定永久删除用户：{{ currentRow.user_name }} 吗？
       </p>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -121,51 +121,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, onMounted, watch, watchEffect } from "vue";
 import { CirclePlus } from "@element-plus/icons-vue";
+import { addTableData, getTableData } from "@/service/service";
+import type { API } from "@/service/typing";
 
-const data = ref([
-  {
-    id: 1,
-    name: "John",
-    email: "john@example.com",
-    date: "2021-01-01",
-    province: "Guangdong",
-    city: "Shenzhen",
-    address: "Futian",
-    postcode: "518000",
-  },
-  {
-    id: 2,
-    name: "Tom",
-    email: "Tom@example.com",
-    date: "2021-01-02",
-    province: "Guangdong",
-    city: "Shenzhen",
-    address: "Futian",
-    postcode: "518000",
-  },
-  {
-    id: 3,
-    name: "Jerry",
-    email: "Jerry@example.com",
-    date: "2021-01-03",
-    province: "Guangdong",
-    city: "Shenzhen",
-    address: "Futian",
-    postcode: "518000",
-  },
-  {
-    id: 4,
-    name: "Mike",
-    email: "Mike@example.com",
-    date: "2021-01-04",
-    province: "Guangdong",
-    city: "Shenzhen",
-    address: "Futian",
-    postcode: "518000",
-  },
-
+const data = ref<Array<API.TTbaleItem>>([
   // Add more data as needed
 ]);
 
@@ -188,17 +149,17 @@ const validatePostcode = (_rule: any, value: any, callback: any) => {
 
 const rules = {
   name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  email: [
-    { required: true, message: "请输入电子邮箱", trigger: "blur" },
-    { validator: validateEmail, trigger: "blur" },
-  ],
-  province: [{ required: true, message: "请选择省份", trigger: "change" }],
-  city: [{ required: true, message: "请选择城市", trigger: "change" }],
-  postcode: [
+  // email: [
+  //   { required: true, message: "请输入电子邮箱", trigger: "blur" },
+  //   { validator: validateEmail, trigger: "blur" },
+  // ],
+  province: [{ required: true, message: "请选择省份", trigger: "blur" }],
+  city: [{ required: true, message: "请选择城市", trigger: "blur" }],
+  zip: [
     { required: true, message: "请输入邮编", trigger: "blur" },
     { validator: validatePostcode, trigger: "blur" },
   ],
-  date: [{ required: true, message: "请选择日期", trigger: "change" }],
+  date_: [{ required: true, message: "请选择日期", trigger: "change" }],
 };
 
 const provinces = [
@@ -235,7 +196,7 @@ const submitDialog = () => {
           if (index !== -1) {
             data.value.splice(index, 1, {
               ...currentRow,
-              date: new Date(currentRow.date).toISOString().split("T")[0],
+              date_: new Date(currentRow.date_).toISOString().split("T")[0],
             });
           }
         }
@@ -250,47 +211,53 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const dialogVisible = ref(false);
 const dialogTitle = ref("");
-const currentRow = reactive<{
-  id: number;
-  name: string;
-  email: string;
-  date: string;
-  province: string;
-  city: string;
-  address: string;
-  postcode: string;
-}>(
-  {} as {
-    id: number;
-    name: string;
-    email: string;
-    date: string;
-    province: string;
-    city: string;
-    address: string;
-    postcode: string;
-  }
+const currentRow = reactive<API.TTbaleItem>(
+  {} as API.TTbaleItem
 );
+
+onMounted(async () => {
+  const res = await getTableData({ page: currentPage.value, pageSize: pageSize.value });
+  if(res.data.code === '0') {
+    data.value = res.data.data;
+  }
+});
+
+watchEffect(() => {
+  getTableData({ page: currentPage.value, pageSize: pageSize.value });
+});
 
 const filteredData = computed(() => {
   if (!search.value) return data.value;
   return data.value.filter(
     (item) =>
-      item.name.includes(search.value) || item.email.includes(search.value)
+      item.user_name.includes(search.value)
   );
 });
 
-const addRow = () => {
-  data.value.push({
+const addRow = async () => {
+  // data.value.push({
+  //   id: data.value.length + 1,
+  //   name: currentRow.name,
+  //   date_: new Date(currentRow.date_).toISOString().split("T")[0],
+  //   province: currentRow.province,
+  //   city: currentRow.city,
+  //   address: currentRow.address,
+  //   zip: currentRow.zip,
+  // });
+  const dataTemp:API.TTbaleItem = {
     id: data.value.length + 1,
-    name: currentRow.name,
-    email: currentRow.email,
-    date: new Date(currentRow.date).toISOString().split("T")[0],
+    user_name: currentRow.user_name,
+    date_: new Date(currentRow.date_).toISOString().split("T")[0],
     province: currentRow.province,
     city: currentRow.city,
     address: currentRow.address,
-    postcode: currentRow.postcode,
-  });
+    zip: currentRow.zip,
+  }
+  const res = await addTableData(dataTemp);
+  if(res.data.code === '0') {
+    data.value.push(dataTemp);
+  }
+
 };
 
 const searchRows = () => {
@@ -310,13 +277,12 @@ const openDialog = (type: string, row = {}) => {
   if (type === "add") {
     console.log("1");
     dialogTitle.value = "新增用户";
-    currentRow.name = "";
-    currentRow.email = "";
-    currentRow.date = "";
+    currentRow.user_name = "";
+    currentRow.date_ = "";
     currentRow.province = "";
     currentRow.city = "";
     currentRow.address = "";
-    currentRow.postcode = "";
+    currentRow.zip = "";
   } else if (type === "edit") {
     dialogTitle.value = "修改用户";
     Object.assign(currentRow, row);
