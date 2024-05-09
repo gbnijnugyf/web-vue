@@ -16,8 +16,11 @@
 <script setup lang="ts">
 import { getUserInfo } from "@/service/service";
 import { onMounted, ref } from "vue";
+
+const BASEURL_STATIC = "http://localhost:9090/static/avatar/";
+
 const user = ref({
-  avatar: "../public/avatarEg.jpg",
+  avatar: "../public/avatarEg.jpg1",
 });
 const userInfo = ref([
   { item: "用户名", info: "John Doe" },
@@ -36,6 +39,9 @@ onMounted(async () => {
       { item: "余额", info: userData.balance===null?"":userData.balance },
       { item: "生日", info: userData.birthday===null?"":userData.birthday },
     ];
+    user.value = {
+      avatar: BASEURL_STATIC+userData.picture.split('\\').pop(),
+    };
   } catch (error) {
     console.error(error);
   }
