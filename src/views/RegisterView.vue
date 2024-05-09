@@ -4,6 +4,7 @@ import router from "@/router";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import { formateDate } from "@/utils/utils";
+import { register } from "@/service/service";
 
 const ruleFormRef = ref<FormInstance>();
 const imageUrl = ref<string>();
@@ -94,10 +95,10 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   console.log(ruleForm);
-  // 检查 avatarBase64 字段是否有值
 
-  formEl.validate((valid) => {
+  formEl.validate(async (valid) => {
     if (valid) {
+      // 检查 avatarBase64 字段是否有值
       if (ruleForm.avatarBase64 === "") {
         ElMessage.error("请上传头像");
         return;
@@ -106,6 +107,22 @@ const submitForm = (formEl: FormInstance | undefined) => {
       console.log(ruleForm);
       console.log(dataStr);
       console.log("submit!");
+
+      const res = await register({
+        userName: ruleForm.username,
+        password: ruleForm.pass,
+        email: ruleForm.email,
+        birthday: dataStr,
+        avatar: ruleForm.avatarBase64,
+      });
+      if(res.data.message === "注册成功"){
+        ElMessage.success("注册成功");
+        resetForm(formEl);
+        router.push("/");
+      }else{
+        ElMessage.error(res.data.message);
+      }
+      console.log(res);
     } else {
       console.log("error submit!");
       return false;

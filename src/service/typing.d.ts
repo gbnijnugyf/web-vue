@@ -3,4 +3,11 @@ export declare namespace API {
     userName: string;
     password: string;
   };
+  type TRegisterInfo = {
+    userName: string;
+    password: string;
+    email: string;
+    birthday: string;
+    avatar: string;
+  };
 }

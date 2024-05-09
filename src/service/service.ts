@@ -2,6 +2,7 @@ import axios from "axios";
 import type { API } from "./typing";
 
 const BASR_URL = "http://localhost:9090";
+const BASEURL_STATIC = "http://localhost:9090/static/avatar/";
 
 const globalAxios = axios.create({
   headers: {
@@ -45,7 +46,7 @@ globalAxios.interceptors.response.use(
   (error) => {
     // 对响应错误
     console.log("error", error);
-    alert("请求失败，请稍后再试")
+    alert("请求失败，请稍后再试");
     return Promise.reject(error);
   }
 );
@@ -58,4 +59,8 @@ const getUserInfo = () => {
   return globalAxios.get(`${BASR_URL}/userInfo`);
 };
 
-export { userLogin, getUserInfo };
+const register = (data: API.TRegisterInfo) => {
+  return globalAxios.post(`${BASR_URL}/register`, data);
+};
+
+export { userLogin, getUserInfo, register, BASEURL_STATIC };

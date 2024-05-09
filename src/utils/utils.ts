@@ -1,3 +1,5 @@
+import { BASEURL_STATIC } from "@/service/service";
+
 export function formateDate(d: string) {
   const date = new Date(d);
   const year = date.getFullYear();
@@ -13,4 +15,8 @@ export function formateDate(d: string) {
   }
 
   return year + "-" + month + "-" + day;
+}
+
+export function getPicUrl(url: string) {
+  return BASEURL_STATIC+url.split('\\').pop();
 }

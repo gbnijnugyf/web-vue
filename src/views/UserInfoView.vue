@@ -14,10 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { getUserInfo } from "@/service/service";
+import { BASEURL_STATIC, getUserInfo } from "@/service/service";
+import { getPicUrl } from "@/utils/utils";
 import { onMounted, ref } from "vue";
 
-const BASEURL_STATIC = "http://localhost:9090/static/avatar/";
 
 const user = ref({
   avatar: "../public/avatarEg.jpg1",
@@ -40,7 +40,7 @@ onMounted(async () => {
       { item: "生日", info: userData.birthday===null?"":userData.birthday },
     ];
     user.value = {
-      avatar: BASEURL_STATIC+userData.picture.split('\\').pop(),
+      avatar: getPicUrl(userData.picture),
     };
   } catch (error) {
     console.error(error);
@@ -83,7 +83,7 @@ onMounted(async () => {
 .avatar {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .info-container {

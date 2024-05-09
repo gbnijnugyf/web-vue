@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { House, Switch, Monitor } from "@element-plus/icons-vue";
 import { ArrowDown } from "@element-plus/icons-vue";
 import { RouterView } from "vue-router";
@@ -12,6 +12,11 @@ const item = {
   address: "No. 189, Grove St, Los Angeles",
 };
 const tableData = ref(Array.from({ length: 20 }).fill(item));
+const username = ref(localStorage.getItem("userName"));
+
+onMounted(() => {
+  username.value = localStorage.getItem("userName");
+});
 
 function handleSelect(keyPath: string) {
   router.push(keyPath);
@@ -26,7 +31,6 @@ const quit = () => {
 const displayCalendar = () => {
   router.push("/main/calendar");
 };
-
 </script>
 <template>
   <el-container class="main-container">
@@ -73,7 +77,7 @@ const displayCalendar = () => {
         <div class="toolbar">
           <el-dropdown>
             <span class="el-dropdown-link">
-              Dropdown List
+              {{ username }}
               <el-icon class="el-icon--right">
                 <arrow-down />
               </el-icon>
@@ -81,17 +85,18 @@ const displayCalendar = () => {
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item @click="quit">退出</el-dropdown-item>
-                <el-dropdown-item @click="displayCalendar">日历</el-dropdown-item>
+                <el-dropdown-item @click="displayCalendar"
+                  >日历</el-dropdown-item
+                >
               </el-dropdown-menu>
             </template>
           </el-dropdown>
         </div>
       </el-header>
 
-        <el-main style="min-height: min-content;">
-          <RouterView />
-        </el-main>
-
+      <el-main style="min-height: min-content">
+        <RouterView />
+      </el-main>
     </el-container>
   </el-container>
 </template>
