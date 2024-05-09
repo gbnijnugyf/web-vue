@@ -17,12 +17,13 @@
     </el-row>
     <el-table
       :data="
-        filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        // filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+        data
       "
       style="width: 100%; height: min-content"
     >
       <el-table-column prop="id" label="序号" width="60"></el-table-column>
-      <el-table-column prop="user_name" label="用户名"></el-table-column>
+      <el-table-column prop="userName" label="用户名"></el-table-column>
       <!-- <el-table-column
         prop="email"
         label="电子邮箱"
@@ -35,11 +36,7 @@
         label="地址"
         width="290"
       ></el-table-column>
-      <el-table-column
-        prop="zip"
-        label="邮编"
-        width="80"
-      ></el-table-column>
+      <el-table-column prop="zip" label="邮编" width="80"></el-table-column>
       <el-table-column prop="date_" label="日期" width="103"></el-table-column>
       <el-table-column label="操作" width="100">
         <template #default="{ row }">
@@ -52,10 +49,10 @@
       class="table-pagination"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage"
+      :current-page.sync="currentPage"
       :page-size="pageSize"
       layout="total, prev, pager, next, jumper"
-      :total="filteredData.length"
+      :total="totalRows"
     >
     </el-pagination>
 
@@ -66,8 +63,8 @@
         :model="currentRow"
         :rules="rules"
       >
-        <el-form-item label="用户名" prop="user_name">
-          <el-input v-model="currentRow.user_name"></el-input>
+        <el-form-item label="用户名" prop="userName">
+          <el-input v-model="currentRow.userName"></el-input>
         </el-form-item>
         <!-- <el-form-item label="电子邮箱" prop="email">
           <el-input v-model="currentRow.email"></el-input>
@@ -110,7 +107,7 @@
         </el-form-item>
       </el-form>
       <p v-else style="margin: 20px 10px">
-        确定永久删除用户：{{ currentRow.user_name }} 吗？
+        确定永久删除用户：{{ currentRow.userName }} 吗？
       </p>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -123,8 +120,9 @@
 <script setup lang="ts">
 import { ref, computed, reactive, onMounted, watch, watchEffect } from "vue";
 import { CirclePlus } from "@element-plus/icons-vue";
-import { addTableData, getTableData } from "@/service/service";
+import { addTableData, getTableData, updateTableData } from "@/service/service";
 import type { API } from "@/service/typing";
+import { ElMessage } from "element-plus";
 
 const data = ref<Array<API.TTbaleItem>>([
   // Add more data as needed
@@ -148,7 +146,7 @@ const validatePostcode = (_rule: any, value: any, callback: any) => {
 };
 
 const rules = {
-  name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  userName: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   // email: [
   //   { required: true, message: "请输入电子邮箱", trigger: "blur" },
   //   { validator: validateEmail, trigger: "blur" },
@@ -185,7 +183,7 @@ const submitDialog = () => {
     }
     dialogVisible.value = false;
   } else {
-    form.value.validate((valid: boolean) => {
+    form.value.validate(async (valid: boolean) => {
       if (valid) {
         if (dialogTitle.value === "新增用户") {
           addRow();
@@ -193,13 +191,25 @@ const submitDialog = () => {
           const index = data.value.findIndex(
             (item) => item.id === currentRow.id
           );
-          if (index !== -1) {
-            data.value.splice(index, 1, {
-              ...currentRow,
-              date_: new Date(currentRow.date_).toISOString().split("T")[0],
-            });
+          // if (index !== -1) {
+          //   data.value.splice(index, 1, {
+          //     ...currentRow,
+          //     date_: new Date(currentRow.date_).toISOString().split("T")[0],
+          //   });
+          // }
+          const dataTemp = {
+            ...currentRow,
+            date_: new Date(currentRow.date_).toISOString().split("T")[0],
+          };
+          const res = await updateTableData(dataTemp);
+          if (res.data.code === "0") {
+            // data.value.splice(index, 1, dataTemp);
+            ElMessage.success(res.data.message);
+          } else {
+            ElMessage.error(res.data.message);
           }
         }
+        flushData()
         dialogVisible.value = false;
       }
     });
@@ -209,29 +219,49 @@ const submitDialog = () => {
 const search = ref("");
 const currentPage = ref(1);
 const pageSize = ref(10);
+// 在你的 setup 函数中创建一个响应式变量来存储总行数
+const totalRows = ref(0);
 const dialogVisible = ref(false);
 const dialogTitle = ref("");
-const currentRow = reactive<API.TTbaleItem>(
-  {} as API.TTbaleItem
-);
+const currentRow = reactive<API.TTbaleItem>({} as API.TTbaleItem);
+
+const flushData = async () => {
+  const res = await getTableData({
+    page: currentPage.value,
+    pageSize: pageSize.value,
+    searchName: search.value,
+  });
+  if (res.data.code === "0") {
+    data.value = res.data.data.data;
+    // 从响应中获取总行数并存储在 totalRows 中
+    totalRows.value = res.data.data.total;
+  }
+};
 
 onMounted(async () => {
-  const res = await getTableData({ page: currentPage.value, pageSize: pageSize.value });
-  if(res.data.code === '0') {
-    data.value = res.data.data;
+  const res = await getTableData({
+    page: currentPage.value,
+    pageSize: pageSize.value,
+    searchName: search.value,
+  });
+  if (res.data.code === "0") {
+    data.value = res.data.data.data;
+    // 从响应中获取总行数并存储在 totalRows 中
+    totalRows.value = res.data.data.total;
+
   }
 });
 
-watchEffect(() => {
-  getTableData({ page: currentPage.value, pageSize: pageSize.value });
-});
+// watchEffect(() => {
+//   getTableData({ page: currentPage.value, pageSize: pageSize.value, searchName: search.value});
+// });
 
 const filteredData = computed(() => {
+  // console.log("filterData1:",data.value);
+  // console.log(data.value.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize.value))
   if (!search.value) return data.value;
-  return data.value.filter(
-    (item) =>
-      item.user_name.includes(search.value)
-  );
+  // console.log("filterData2:",data.value.filter((item) => item.userName.includes(search.value)))
+  return data.value.filter((item) => item.userName.includes(search.value));
 });
 
 const addRow = async () => {
@@ -244,32 +274,42 @@ const addRow = async () => {
   //   address: currentRow.address,
   //   zip: currentRow.zip,
   // });
-  const dataTemp:API.TTbaleItem = {
-    id: data.value.length + 1,
-    user_name: currentRow.user_name,
+  const dataTemp: API.TTbaleItem = {
+    id: null,
+    userName: currentRow.userName,
     date_: new Date(currentRow.date_).toISOString().split("T")[0],
     province: currentRow.province,
     city: currentRow.city,
     address: currentRow.address,
     zip: currentRow.zip,
-  }
+  };
   const res = await addTableData(dataTemp);
-  if(res.data.code === '0') {
-    data.value.push(dataTemp);
+  if (res.data.code === "0") {
+    // data.value.push(dataTemp);
+    flushData()
+    ElMessage.success(res.data.message);
+  } else {
+    ElMessage.error(res.data.message);
   }
-
 };
 
-const searchRows = () => {
+const searchRows = async () => {
   currentPage.value = 1;
+  await flushData();
 };
 
-const handleSizeChange = (val: number) => {
-  pageSize.value = val;
+const handleSizeChange = async (val: number) => {
+  // pageSize.value = val;
+  await flushData();
+  console.log("data:",data.value);
 };
 
-const handleCurrentChange = (val: number) => {
+const handleCurrentChange = async (val: number) => {
   currentPage.value = val;
+  await flushData();
+  console.log("data:",data.value);
+
+
 };
 
 const openDialog = (type: string, row = {}) => {
@@ -277,7 +317,7 @@ const openDialog = (type: string, row = {}) => {
   if (type === "add") {
     console.log("1");
     dialogTitle.value = "新增用户";
-    currentRow.user_name = "";
+    currentRow.userName = "";
     currentRow.date_ = "";
     currentRow.province = "";
     currentRow.city = "";

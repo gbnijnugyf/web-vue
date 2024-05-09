@@ -18,10 +18,11 @@ export declare namespace API {
   type TTableParams = {
     pageSize: number;
     page: number;
+    searchName:string
   };
   type TTbaleItem = {
-    id: number;
-    user_name: string;
+    id: number|null;
+    userName: string;
     date_: string;
     province: string;
     city: string;

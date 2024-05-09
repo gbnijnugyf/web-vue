@@ -76,5 +76,8 @@ const addTableData = (data: API.TTbaleItem) => {
   return globalAxios.post(`${BASR_URL}/addTableData`, data);
 }
 
+const updateTableData = (data: API.TTbaleItem) => {
+  return globalAxios.put(`${BASR_URL}/updateTableData`, data);
+}
 
-export { addTableData,userLogin, getTableData,getUserInfo, register,changePassword, BASEURL_STATIC };
+export { updateTableData,addTableData,userLogin, getTableData,getUserInfo, register,changePassword, BASEURL_STATIC };
