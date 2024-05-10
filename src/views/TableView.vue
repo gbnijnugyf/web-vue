@@ -120,7 +120,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive, onMounted, watch, watchEffect } from "vue";
 import { CirclePlus } from "@element-plus/icons-vue";
-import { addTableData, getTableData, updateTableData } from "@/service/service";
+import { addTableData, deleteTableData, getTableData, updateTableData } from "@/service/service";
 import type { API } from "@/service/typing";
 import { ElMessage } from "element-plus";
 
@@ -175,12 +175,19 @@ const cities = [
 
 const form = ref();
 
-const submitDialog = () => {
+const submitDialog = async () => {
   if (dialogTitle.value === "提示") {
-    const index = data.value.findIndex((item) => item.id === currentRow.id);
-    if (index !== -1) {
-      data.value.splice(index, 1);
+    // const index = data.value.findIndex((item) => item.id === currentRow.id);
+    // if (index !== -1) {
+    //   data.value.splice(index, 1);
+    // }
+    const res = await deleteTableData(currentRow.id?currentRow.id:-1);
+    if (res.data.code === "0") {
+      ElMessage.success(res.data.message);
+    } else {
+      ElMessage.error(res.data.message);
     }
+    flushData()
     dialogVisible.value = false;
   } else {
     form.value.validate(async (valid: boolean) => {

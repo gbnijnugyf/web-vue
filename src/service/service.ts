@@ -80,4 +80,8 @@ const updateTableData = (data: API.TTbaleItem) => {
   return globalAxios.put(`${BASR_URL}/updateTableData`, data);
 }
 
-export { updateTableData,addTableData,userLogin, getTableData,getUserInfo, register,changePassword, BASEURL_STATIC };
+const deleteTableData = (id: number) => {
+  return globalAxios.delete(`${BASR_URL}/deleteTableData`, { params: { id } });
+}
+
+export { deleteTableData,updateTableData,addTableData,userLogin, getTableData,getUserInfo, register,changePassword, BASEURL_STATIC };
